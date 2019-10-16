@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="CG_Task_2">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../CG_Task_2" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../CG_Task_2/src" />
+    </SOURCES>
+  </library>
+</component>
