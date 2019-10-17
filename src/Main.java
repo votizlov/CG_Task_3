@@ -1,6 +1,9 @@
 import functions.Function1;
 import functions.IFunction;
-import sample.lineDrawers.LineDrawer;
+import sample.ImageBufferPixelDrawer;
+import sample.lineDrawers.DDALineDrawer;
+import sample.lineDrawers.WuLineDrawerDDA;
+//import sample.lineDrawers.LineDrawer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,37 +15,43 @@ import java.util.LinkedList;
 public class Main {
 
     static class DrawPanel extends JPanel implements MouseMotionListener, MouseListener, MouseWheelListener {
-        private LineDrawer ld;
+        private DDALineDrawer ld;
         private ScreenConverterInterface sc;
         private Line l;
         private boolean isMouseClicked = false;
         private IFunction currentFunction;
 
-        public DrawPanel(){
+        public DrawPanel() {
             super();
             //sc = new ScreenConverter(-2,2,4,4,500,500);
-            l = new Line(new RealPoint(0,0),new RealPoint(1,1));
+            l = new Line(new RealPoint(0, 0), new RealPoint(1, 1));
         }
 
-        public void setCurrentFunction(IFunction function){
+        public void setCurrentFunction(IFunction function) {
             this.currentFunction = function;
             repaint();
         }
 
         @Override
-        public void paint(Graphics g){
-            BufferedImage bi = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
-
-            if(ld!=null){
-                ld.drawLine(getWidth()/2,0,getWidth()/2,getHeight(),Color.CYAN);//todo make constr for points
-                ld.drawLine(0,getHeight()/2,getWidth(),getHeight()/2,Color.CYAN);
+        public void paint(Graphics g) {
+            BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+            ImageBufferPixelDrawer pd = new ImageBufferPixelDrawer(bi);
+            ld = new DDALineDrawer(pd);
+            //ld.drawLine((int) getWidth() / 2, 0, (int) getWidth() / 2, (int) getHeight(), Color.CYAN);//todo make constr for points
+            ld.drawLine(0, 0, 100, 100, Color.CYAN);
+            //ScreenPoint tPoint = new ScreenPoint(0,currentFunction.compute(0));
+            for (int x = 0; x < getWidth(); x++) {
+//                currentFunction.compute(x);
+                //ld.drawLine();
             }
-            g.drawImage(bi,0,0,null);
+            g.drawImage(bi, 0, 0, null);
         }
+
         private ScreenPoint last = null;
+
         @Override
         public void mouseDragged(MouseEvent mouseEvent) {
-            if(last!=null){
+            if (last != null) {
 
             }
         }
@@ -84,16 +93,17 @@ public class Main {
             e.getScrollAmount();
         }
     }
-    public static void main(String... args){
+
+    public static void main(String... args) {
         DrawPanel myPanel = new DrawPanel();
         JFrame drawFrame = new JFrame();
         JPanel funcPanel = new JPanel();
         JFrame frame = new JFrame();
-        HashMap<JRadioButton,IFunction> buttonIFunctionHashMap = new HashMap<>();
+        HashMap<JButton, IFunction> buttonIFunctionHashMap = new HashMap<>();
 
 
-        funcPanel.setSize(200, 500);
-        frame.setSize(200, 500);
+        funcPanel.setSize(300, 500);
+        frame.setSize(300, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(funcPanel);
         frame.setVisible(true);
@@ -101,11 +111,11 @@ public class Main {
         funcPanel.setVisible(true);
         funcPanel.setLayout(new GridLayout(8, 2));
         boolean flag = true;
-        JRadioButton btn;
-        for(int i =0;i<16;i++){
-            if(flag) {
-                btn = new JRadioButton();
-                buttonIFunctionHashMap.put(btn,new Function1());
+        JButton btn;
+        for (int i = 0; i < 16; i++) {
+            if (flag) {
+                btn = new JButton();
+                buttonIFunctionHashMap.put(btn, new Function1());
                 btn.setAction(new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -113,10 +123,9 @@ public class Main {
                     }
                 });
                 funcPanel.add(btn);
-            }
-            else
+            } else
                 funcPanel.add(new JTextField(i));
-            flag=!flag;
+            flag = !flag;
         }
 
         myPanel.setSize(800, 600);
