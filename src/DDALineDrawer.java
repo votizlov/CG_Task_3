@@ -1,5 +1,3 @@
-package sample.lineDrawers;
-
 import sample.ImageBufferPixelDrawer;
 
 import java.awt.*;
@@ -8,10 +6,6 @@ import static java.lang.Math.abs;
 
 public class DDALineDrawer  {
     ImageBufferPixelDrawer pd;
-
-    public void drawLine(int x1, int y1, int x2, int y2) {
-
-    }
 
     public DDALineDrawer(ImageBufferPixelDrawer pd){
         this.pd = pd;
@@ -43,5 +37,9 @@ public class DDALineDrawer  {
 
     public void setPixelDrawer (ImageBufferPixelDrawer pixelDrawer) {
         this.pd = pixelDrawer;
+    }
+
+    public void drawLine(ScreenPoint realToScreen, ScreenPoint realToScreen1,Color color) {
+        drawLine(realToScreen.getI(),realToScreen1.getJ(),realToScreen1.getI(),realToScreen1.getJ(),color);
     }
 }

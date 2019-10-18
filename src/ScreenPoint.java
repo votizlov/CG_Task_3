@@ -6,12 +6,20 @@ public class ScreenPoint {
         this.j = j;
     }
 
-    public double getJ() {
+    public int getJ() {
         return j;
     }
 
-    public double getI() {
+    public int getI() {
         return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
     }
     //get construct
 }

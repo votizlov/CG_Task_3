@@ -1,16 +1,24 @@
 import java.awt.*;
 
-public class ScreenConverter implements ScreenConverterInterface {
+public class ScreenConverter  {
     private double xr,yr,wr,hr;
     private int ws,hs;
-    @Override
+
+    public ScreenConverter(double xr,double yr,double wr,double hr, int ws, int hs) {
+        this.xr = xr;
+        this.yr = yr;
+        this.wr = wr;
+        this.hr = hr;
+        this.ws = ws;
+        this.hs = hs;
+    }
+
     public ScreenPoint realToScreen(RealPoint point) {
         int i = (int)((point.getX() - xr)*ws/wr);
         int j = (int)((yr - point.getY())*hs/hr);
         return new ScreenPoint(i,j);
     }
 
-    @Override
     public RealPoint screenToReal(ScreenPoint point) {
         double x = xr + point.getI() * wr/ws;
         double y = yr - point.getJ() * hr/hs;

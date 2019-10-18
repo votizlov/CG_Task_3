@@ -12,7 +12,8 @@ public class ImageBufferPixelDrawer {//todo switch code to this architecture
     }
 
     public void drawPixel(int x, int y, Color c) {
-        bi.setRGB(x,y,c.getRGB());
+        if (x<bi.getWidth()&&y<bi.getHeight())
+            bi.setRGB(x,y,c.getRGB());
     }
 
     //@Override

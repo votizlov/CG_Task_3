@@ -1,30 +1,28 @@
-import functions.Function1;
-import functions.IFunction;
+import functions.*;
 import sample.ImageBufferPixelDrawer;
-import sample.lineDrawers.DDALineDrawer;
-import sample.lineDrawers.WuLineDrawerDDA;
-//import sample.lineDrawers.LineDrawer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class Main {
 
     static class DrawPanel extends JPanel implements MouseMotionListener, MouseListener, MouseWheelListener {
         private DDALineDrawer ld;
-        private ScreenConverterInterface sc;
-        private Line l;
+        private ScreenConverter sc;
+        private ScreenPoint last = new ScreenPoint(400, 300);
         private boolean isMouseClicked = false;
-        private IFunction currentFunction;
+        private IFunction currentFunction = new DefaultFunction();
 
         public DrawPanel() {
             super();
-            //sc = new ScreenConverter(-2,2,4,4,500,500);
-            l = new Line(new RealPoint(0, 0), new RealPoint(1, 1));
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            addMouseListener(this);
+            addMouseMotionListener(this);
+            addMouseWheelListener(this);
+            sc = new ScreenConverter(-2, 2, 4, -4, getWidth(), getHeight());
         }
 
         public void setCurrentFunction(IFunction function) {
@@ -34,48 +32,60 @@ public class Main {
 
         @Override
         public void paint(Graphics g) {
+
             BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
             ImageBufferPixelDrawer pd = new ImageBufferPixelDrawer(bi);
             ld = new DDALineDrawer(pd);
-            //ld.drawLine((int) getWidth() / 2, 0, (int) getWidth() / 2, (int) getHeight(), Color.CYAN);//todo make constr for points
-            ld.drawLine(0, 0, 100, 100, Color.CYAN);
-            //ScreenPoint tPoint = new ScreenPoint(0,currentFunction.compute(0));
-            for (int x = 0; x < getWidth(); x++) {
-//                currentFunction.compute(x);
-                //ld.drawLine();
+            ld.drawLine(last.getI(), 0, last.getI(), 599, Color.CYAN);
+            ld.drawLine(0, last.getJ(), 799, last.getJ(), Color.CYAN);
+            RealPoint previousPoint = new RealPoint(0, currentFunction.compute(0));
+            //RealPoint
+            for (double x = 0; x < getWidth(); x++) {
+                RealPoint nextPoint = new RealPoint(x, currentFunction.compute(x));
+                //ld.drawLine(sc.realToScreen(previousPoint), sc.realToScreen(nextPoint), Color.ORANGE);
+                ld.drawLine((int) (previousPoint.getX()),(int) ((previousPoint.getY()+last.getJ())*1),(int) (x),(int) ((currentFunction.compute(x)+last.getJ())*1),Color.CYAN);
+                previousPoint = nextPoint;
             }
+            g.setColor(Color.CYAN);
             g.drawImage(bi, 0, 0, null);
-        }
-
-        private ScreenPoint last = null;
-
-        @Override
-        public void mouseDragged(MouseEvent mouseEvent) {
-            if (last != null) {
-
+            for (int i = 0; i < getWidth(); i += 100) {
+                g.drawString(String.valueOf(i), last.getI() + i, getHeight() / 2);
+            }
+            for (int i = 0; i < getHeight(); i += 100) {
+                g.drawString(String.valueOf(i), getWidth() / 2, last.getJ() + i);
             }
         }
 
         @Override
-        public void mouseMoved(MouseEvent mouseEvent) {
-            //ScreenPoint screenPoint = new ScreenPoint();
-            //l.setP2(sc.screenToReal(screenPoint));
+        public void mouseDragged(MouseEvent e) {
+            if (last != null) {
+                ScreenPoint cur = new ScreenPoint(e.getX(), e.getY());
+                int dj = cur.getJ() - last.getJ();
+                int di = cur.getI() - last.getI();
+                RealPoint d = sc.screenToReal(new ScreenPoint(di, dj));
+                sc.setXr(d.getX());
+                sc.setYr(d.getY());
+                last = cur;
+                repaint();
+            }
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            ScreenPoint m = new ScreenPoint(e.getX(), e.getY());
             repaint();
         }
 
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-
         }
 
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
-            isMouseClicked = !isMouseClicked;
         }
 
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
-            isMouseClicked = !isMouseClicked;
         }
 
         @Override
@@ -100,7 +110,7 @@ public class Main {
         JPanel funcPanel = new JPanel();
         JFrame frame = new JFrame();
         HashMap<JButton, IFunction> buttonIFunctionHashMap = new HashMap<>();
-
+        IFunction[] functions = new IFunction[]{new Function1(),new Function2(),new Function3(),new Function4(),new Function5(),new Function6(), new Function7()};
 
         funcPanel.setSize(300, 500);
         frame.setSize(300, 500);
@@ -112,13 +122,17 @@ public class Main {
         funcPanel.setLayout(new GridLayout(8, 2));
         boolean flag = true;
         JButton btn;
+        int j =0;
         for (int i = 0; i < 16; i++) {
             if (flag) {
                 btn = new JButton();
-                buttonIFunctionHashMap.put(btn, new Function1());
+                buttonIFunctionHashMap.put(btn, functions[j]);
+                if(j<6)
+                    j++;
                 btn.setAction(new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        System.out.println("a");
                         myPanel.setCurrentFunction(buttonIFunctionHashMap.get(e.getSource()));
                     }
                 });
@@ -127,12 +141,13 @@ public class Main {
                 funcPanel.add(new JTextField(i));
             flag = !flag;
         }
-
         myPanel.setSize(800, 600);
         drawFrame.setSize(800, 600);
         drawFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         drawFrame.setContentPane(myPanel);
         drawFrame.setVisible(true);
+        drawFrame.requestFocus();
         myPanel.setVisible(true);
+        myPanel.grabFocus();
     }
 }
