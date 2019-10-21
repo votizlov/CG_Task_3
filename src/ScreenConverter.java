@@ -14,15 +14,31 @@ public class ScreenConverter  {
     }
 
     public ScreenPoint realToScreen(RealPoint point) {
-        int i = (int)((point.getX() - xr)*ws/wr);
-        int j = (int)((yr - point.getY())*hs/hr);
-        return new ScreenPoint(i,j);
+        int i = (int) ((point.getX() - xr) * ws / wr);
+        int j = (int) ((yr - point.getY()) * hs / hr);
+        return new ScreenPoint(i, j);
     }
 
     public RealPoint screenToReal(ScreenPoint point) {
-        double x = xr + point.getI() * wr/ws;
-        double y = yr - point.getJ() * hr/hs;
-        return new RealPoint(x,y);
+        double x = point.getI() * wr / ws + xr;
+        double y = yr - point.getJ() * hr / hs;
+        return new RealPoint(x, y);
+    }
+
+    public int r2sX(double x) {
+        return (int) ((x - xr) * ws / wr);
+    }
+
+    public int r2sY(double y) {
+        return (int) ((yr - y) * hs / hr);
+    }
+
+    public double s2rX(int i) {
+        return i * wr / ws + xr;
+    }
+
+    public double s2rY(int j) {
+        return yr - j * hr / hs;
     }
 
     public double getXr() {

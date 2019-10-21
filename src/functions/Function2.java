@@ -7,4 +7,9 @@ public class Function2 implements IFunction {
     public double compute(double x) {
         return pow(x,3)-pow(x,2);
     }
+
+    @Override
+    public String getString() {
+        return "x^3-x^2";
+    }
 }

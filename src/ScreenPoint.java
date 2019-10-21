@@ -18,6 +18,14 @@ public class ScreenPoint {
         this.i = i;
     }
 
+    @Override
+    public String toString() {
+        return "ScreenPoint{" +
+                "i=" + i +
+                ", j=" + j +
+                '}';
+    }
+
     public void setJ(int j) {
         this.j = j;
     }

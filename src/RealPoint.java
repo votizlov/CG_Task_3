@@ -13,5 +13,12 @@ public class RealPoint {
     public double getY() {
         return y;
     }
-    //геттеры конструктор
+
+    @Override
+    public String toString() {
+        return "RealPoint{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

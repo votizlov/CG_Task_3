@@ -40,6 +40,10 @@ public class DDALineDrawer  {
     }
 
     public void drawLine(ScreenPoint realToScreen, ScreenPoint realToScreen1,Color color) {
-        drawLine(realToScreen.getI(),realToScreen1.getJ(),realToScreen1.getI(),realToScreen1.getJ(),color);
+        drawLine(realToScreen.getI(),realToScreen.getJ(),realToScreen1.getI(),realToScreen1.getJ(),color);
+    }
+
+    public void drawLine(RealPoint last, RealPoint r, Color c) {
+        drawLine((int)last.getX(),(int)last.getY(),(int)r.getX(),(int)r.getY(),c);
     }
 }

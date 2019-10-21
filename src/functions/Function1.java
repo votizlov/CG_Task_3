@@ -8,4 +8,9 @@ public class Function1 implements IFunction {
     public double compute(double x) {
         return pow(Math.E,sin(x*3));
     }
+
+    @Override
+    public String getString() {
+        return "e^sin(3x)";
+    }
 }
